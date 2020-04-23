@@ -38,15 +38,20 @@ app.get('/info', (req, res) => {
     res.send(`<p>${info}</p><p>${time}</p>`)
 })
 
-app.get('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
+app.get('/api/persons/:id', (req, res) => {
+    const id = Number(req.params.id)
     const person = persons.find(p => p.id === id)
     if(person){
-        response.json(person)
+        res.json(person)
     } else {
-        response.status(404).end()
+        res.status(404).end()
     }
-    
+})
+
+app.delete('/api/persons/:id', (req, res) => {
+    const id = Number(req.params.id)
+    persons = persons.filter(p => p.id !== id)
+    res.status(204).end()
 })
 
 const port = 3001
