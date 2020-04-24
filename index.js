@@ -60,13 +60,21 @@ app.post('/api/persons', (req, res) => {
     console.log(req.body)
     const body = req.body
     if (!body.name) {
+        console.log('Name missing error')
         return Response.status(400).json({
             error: 'Name needed'
         })
     }
     if (!body.number) {
+        console.log('Number missing error')
         return Response.status(400).json({
             error: 'Number needed'
+        })
+    }
+    if (persons.map(p => p.name).includes(body.name)){
+        console.log('Name exists error')
+        return Response.status(409).json({
+            error: 'Name already exists'
         })
     }
     const person = {
