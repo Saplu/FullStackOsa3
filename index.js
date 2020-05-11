@@ -63,39 +63,27 @@ app.delete('/api/persons/:id', (req, res) => {
 })
 
 app.post('/api/persons', (req, res) => {
-    console.log(req.body)
     const body = req.body
-    if (!body.name) {
-        console.log('Name missing error')
-        return Response.status(400).json({
-            error: 'Name needed'
-        })
+    if (body.name === undefined || body.number === undefined) {
+        return res.status(400).json({error: 'required information missing'})
     }
-    if (!body.number) {
-        console.log('Number missing error')
-        return Response.status(400).json({
-            error: 'Number needed'
-        })
-    }
-    if (persons.map(p => p.name).includes(body.name)){
-        console.log('Name exists error')
-        return Response.status(409).json({
-            error: 'Name already exists'
-        })
-    }
-    const person = {
+    
+    const person = new Person({
         name: body.name,
         number: body.number,
-        id: generateId()
-    }
-    console.log(person)
-    persons = persons.concat(person)
-    res.json(person)
-})
+    })
 
-const generateId = () => {
-    return Math.floor(Math.random() * 9999999)
-}
+    person.save().then(savedPerson => {
+        res.json(savedPerson.toJSON())
+    })
+
+    // if (persons.map(p => p.name).includes(body.name)){
+    //     console.log('Name exists error')
+    //     return Response.status(409).json({
+    //         error: 'Name already exists'
+    //     })
+    // }
+})
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
