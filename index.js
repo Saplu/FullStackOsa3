@@ -68,7 +68,7 @@ app.delete('/api/persons/:id', (req, res, next) => {
 
 app.post('/api/persons', (req, res, next) => {
     const body = req.body
-
+    
     const person = new Person({
         name: body.name,
         number: body.number,
@@ -77,13 +77,20 @@ app.post('/api/persons', (req, res, next) => {
     person.save().then(savedPerson => {
         res.json(savedPerson.toJSON())
     })
+})
 
-    // if (persons.map(p => p.name).includes(body.name)){
-    //     console.log('Name exists error')
-    //     return Response.status(409).json({
-    //         error: 'Name already exists'
-    //     })
-    // }
+app.put('/api/persons/:id', (req, res, next) => {
+    const body = req.body
+
+    const person = {
+        number: body.number,
+    }
+
+    Person.findByIdAndUpdate(req.params.id, person, {new: true})
+        .then(updatedPerson => {
+            res.json(updatedPerson.toJSON())
+        })
+        .catch(error => next(error))
 })
 
 const errorHandler = (error, req, res, next) => {
